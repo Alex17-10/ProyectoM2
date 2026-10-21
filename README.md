@@ -1,40 +1,42 @@
-# FleetLogix — Documentación integral del proyecto de datos
-
-Este documento reúne en un solo flujo las cuatro partes del proyecto FleetLogix: la generación de datos sintéticos, la optimización de consultas en PostgreSQL, la arquitectura AWS y la construcción del Data Warehouse con su proceso ETL.
-
-## Contenido
-
-1. Descripción del proyecto
-2. Generación de datos sintéticos
-3. Optimización de consultas en PostgreSQL
-4. Arquitectura AWS
-5. Construcción del Data Warehouse y proceso ETL
+> 🌐 **Note:** The Spanish version of this README is available as a PDF. Some content (charts, diagrams, screenshots) is easier to follow in the PDF version.
+>
+> 🌐 **Nota:** La versión en español de este README está disponible en formato PDF. Algunos contenidos (gráficas, diagramas, capturas) se ven más claros en la versión PDF.
 
 ---
 
-## 1. Descripción del proyecto
+# FleetLogix: Comprehensive Data Project Documentation
 
-FleetLogix es una empresa de transporte y logística que opera una flota de 200 vehículos realizando entregas de última milla en 5 ciudades principales. La empresa ha estado operando con sistemas legacy y hojas de cálculo, pero necesita modernizar su infraestructura de datos para competir en el mercado actual.
+This document brings together, in a single flow, the four parts of the FleetLogix project: synthetic data generation, PostgreSQL query optimization, the AWS architecture, and the construction of the Data Warehouse with its ETL process.
 
-El objetivo es potenciar esta infraestructura: poblar todas las tablas con datos sintéticos masivos que respeten las relaciones del negocio, desarrollar queries para resolver problemas operativos reales, y diseñar una arquitectura cloud que permite análisis en tiempo real y toma de decisiones basada en datos.
+## Contents
 
-Como punto de partida, se proporcionó un código base para la generación de datos sintéticos que presentaba funcionalidades incompletas y diversos errores que afectaban la lógica y la consistencia de la información generada. Por esta razón, fue necesario realizar un proceso de análisis, depuración y desarrollo para completar las secciones faltantes, corregir las inconsistencias detectadas y garantizar que los datos generados cumplieran con las relaciones, restricciones y volúmenes requeridos para el proyecto.
+1. Project description
+2. Synthetic data generation
+3. PostgreSQL query optimization
+4. AWS architecture
+5. Data Warehouse construction and ETL process
 
-### Objetivos
+---
 
-El proyecto busca cumplir los siguientes objetivos:
+## 1. Project Description
 
-- Analizar el modelo relacional existente.
-- Comprender las relaciones entre entidades.
-- Generar más de 505.000 registros sintéticos.
-- Mantener la integridad referencial.
-- Respetar reglas de negocio.
-- Validar la calidad de los datos generados.
-- Implementar consultas de análisis empresarial.
+FleetLogix is a transportation and logistics company that operates a fleet of 200 vehicles performing last-mile deliveries in 5 major cities. The company has been running on legacy systems and spreadsheets, but needs to modernize its data infrastructure to compete in today's market.
 
-### Tecnologías utilizadas
+The goal is to strengthen this infrastructure: populate all tables with massive synthetic data that respects business relationships, develop queries to solve real operational problems, and design a cloud architecture that enables real-time analysis and data-driven decision making.
 
-Durante el desarrollo del proyecto se utilizaron las siguientes herramientas:
+As a starting point, a base code for synthetic data generation was provided. It had incomplete functionality and several errors affecting the logic and consistency of the generated information. For this reason, a process of analysis, debugging and development was needed to complete the missing sections, fix the inconsistencies found, and ensure the generated data met the relationships, constraints and volumes required by the project.
+
+### Objectives
+
+- Analyze the existing relational model.
+- Understand the relationships between entities.
+- Generate more than 505,000 synthetic records.
+- Maintain referential integrity.
+- Respect business rules.
+- Validate the quality of the generated data.
+- Implement business analysis queries.
+
+### Technologies Used
 
 - PostgreSQL 15
 - Python 3
@@ -46,11 +48,11 @@ Durante el desarrollo del proyecto se utilizaron las siguientes herramientas:
 
 ---
 
-## 2. Generación de datos sintéticos
+## 2. Synthetic Data Generation
 
-### 2.1 Modelo de datos
+### 2.1 Data Model
 
-El sistema está compuesto por seis tablas principales:
+The system consists of six main tables:
 
 - Vehicles
 - Drivers
@@ -59,9 +61,10 @@ El sistema está compuesto por seis tablas principales:
 - Deliveries
 - Maintenance
 
-Estas entidades representan el funcionamiento de una empresa dedicada al transporte y distribución de mercancías entre diferentes ciudades del país.
+These entities represent the operation of a company dedicated to transporting and distributing goods between different cities in the country.
 
-> **[Imagen del PDF original: diagrama entidad-relación (DBeaver) con las tablas `vehicles`, `drivers`, `routes`, `trips`, `deliveries` y `maintenance`.**
+> **Figure (see PDF):** entity-relationship diagram (DBeaver) with the tables below.
+>
 > - `vehicles`: vehicle_id, license_plate, vehicle_type, capacity_kg, fuel_type, acquisition_date, status.
 > - `drivers`: driver_id, employee_code, first_name, last_name, license_number, license_expiry, phone, hire_date, status.
 > - `routes`: route_id, route_code, origin_city, destination_city, distance_km, estimated_duration_hours, toll_cost.
@@ -69,488 +72,409 @@ Estas entidades representan el funcionamiento de una empresa dedicada al transpo
 > - `deliveries`: delivery_id, trip_id, tracking_number, customer_name, delivery_address, package_weight_kg, scheduled_datetime, delivered_datetime, delivery_status, recipient_signature.
 > - `maintenance`: maintenance_id, vehicle_id, maintenance_date, maintenance_type, description, cost, next_maintenance_date, performed_by.
 >
-> `trips` se relaciona con `vehicles`, `drivers` y `routes`; `deliveries` se relaciona con `trips`; `maintenance` se relaciona con `vehicles`.**
+> `trips` relates to `vehicles`, `drivers` and `routes`; `deliveries` relates to `trips`; `maintenance` relates to `vehicles`.
 
-### 2.2 Proceso de generación
+### 2.2 Generation Process
 
-Para poblar la base de datos se desarrolló un script en Python completamente automatizado.
+A fully automated Python script was developed to populate the database. Generation respected all relationships between tables, avoided inconsistencies, and simulated behavior close to a real logistics operation.
 
-La generación se realizó respetando todas las relaciones entre tablas, evitando inconsistencias y simulando un comportamiento cercano a una operación logística real.
+### 2.3 Generated Records
 
-### 2.3 Registros generados
-
-| Tabla | Registros |
+| Table | Records |
 |---|---|
 | Vehicles | 200 |
 | Drivers | 400 |
 | Routes | 50 |
-| Trips | 100000 |
-| Deliveries | 400000 |
-| Maintenance | 5000 |
+| Trips | 100,000 |
+| Deliveries | 400,000 |
+| Maintenance | 5,000 |
 
-**Total: 505.650 registros**
+**Total: 505,650 records**
 
-### 2.4 Reglas de negocio implementadas
+### 2.4 Implemented Business Rules
 
-Durante la generación de datos se respetaron las siguientes reglas:
+The following rules were respected during data generation.
 
-#### Vehículos
+**Vehicles**
+- Distribution across large trucks, medium trucks, vans and motorcycles.
+- Different capacities depending on vehicle type.
+- Realistic acquisition dates.
+- Active vehicles and vehicles under maintenance.
 
-- Distribución entre camiones grandes, camiones medianos, vans y motocicletas.
-- Capacidades diferentes según el tipo de vehículo.
-- Fechas de adquisición realistas.
-- Vehículos activos y en mantenimiento.
+**Drivers**
 
-#### Conductores
+Each driver has:
+- A unique employee code.
+- A valid license.
+- A license type.
+- A hire date.
+- An active or inactive status.
 
-Cada conductor posee:
+**Routes**
 
-- Código de empleado único.
-- Licencia válida.
-- Tipo de licencia.
-- Fecha de contratación.
-- Estado activo o inactivo.
-
-#### Rutas
-
-Las rutas conectan las principales ciudades de Colombia:
-
+Routes connect the main cities of Colombia:
 - Bogotá
 - Medellín
 - Cali
 - Barranquilla
 - Cartagena
 
-Cada ruta contiene:
+Each route contains:
+- Approximate distance.
+- Estimated time.
+- Toll cost.
 
-- Distancia aproximada.
-- Tiempo estimado.
-- Valor de peajes.
+**Trips**
 
-#### Viajes
+Each trip:
+- Has an existing vehicle.
+- Has an existing driver.
+- Belongs to a valid route.
+- Respects the vehicle's maximum capacity.
+- Calculates the transported weight.
+- Calculates fuel consumption.
+- Records departure and arrival dates.
 
-Cada viaje:
+In addition, statuses were distributed using controlled probabilities to simulate a real operation.
 
-- Posee un vehículo existente,
-- Posee un conductor existente,
-- Pertenece a una ruta válida,
-- Respeta la capacidad máxima del vehículo,
-- Calcula peso transportado,
-- Calcula consumo de combustible,
-- Registra fecha de salida y llegada.
+**Deliveries**
 
-Además, los estados fueron distribuidos utilizando probabilidades controladas para simular una operación real.
+Each delivery must belong to a trip. The following are generated:
+- Customer
+- Address
+- Weight
+- Scheduled time
+- Actual time
+- Recipient signature
+- Delivery status
 
-#### Entregas
+The number of deliveries per trip varies between two and six packages.
 
-Cada entrega pertenece obligatoriamente a un viaje.
+**Maintenance**
 
-Se generan:
+Maintenance records are generated in proportion to each vehicle's usage. To do this, the following were analyzed:
+- Number of trips made
+- Operating period
+- Vehicle type
 
-- Cliente,
-- Dirección,
-- Peso,
-- Horario programado,
-- Horario real,
-- Firma del receptor,
-- Estado de la entrega.
+This avoids assigning unrealistic maintenance to rarely used vehicles.
 
-La cantidad de entregas por viaje varía entre dos y seis paquetes.
+### 2.5 Data Quality Control
 
-#### Mantenimientos
+After generating the data, a complete validation stage was run. Checks included:
 
-Los mantenimientos se generan proporcionalmente al uso de cada vehículo.
+- Referential integrity.
+- Temporal consistency.
+- Maximum load capacity.
+- Fuel consumption.
+- Maintenance costs.
+- Statistical distribution of statuses.
+- Vehicles without trips.
+- Drivers without trips.
+- Maintenance before the vehicle's purchase date.
+- Trips before the driver's hire date.
+- Delivery distribution.
+- Fuel distribution.
+- Trip duration.
 
-Para ello se analizó:
-
-- Cantidad de viajes realizados,
-- Periodo de operación,
-- Tipo de vehículo.
-
-Esto evita asignar mantenimientos irreales a vehículos poco utilizados.
-
-### 2.5 Control de calidad de datos
-
-Después de generar la información se ejecutó una etapa completa de validación.
-
-Entre las verificaciones realizadas se encuentran:
-
-- Integridad referencial.
-- Consistencia temporal.
-- Capacidad máxima de carga.
-- Consumo de combustible.
-- Costos de mantenimiento.
-- Distribución estadística de estados.
-- Vehículos sin viajes.
-- Conductores sin viajes.
-- Mantenimientos antes de la compra del vehículo.
-- Viajes antes de la contratación del conductor.
-- Distribución de entregas.
-- Distribución de combustible.
-- Duración de viajes.
-
-Estas validaciones permitieron garantizar que los datos fueran consistentes antes de iniciar el análisis.
+These validations ensured the data was consistent before starting the analysis.
 
 ---
 
-## 3. Optimización de consultas en PostgreSQL
+## 3. PostgreSQL Query Optimization
 
-### 3.1 Optimización mediante índices
+### 3.1 Optimization Through Indexes
 
-Con el objetivo de mejorar el rendimiento de las consultas más costosas del sistema, se implementaron varios índices sobre las tablas con mayor volumen de datos y sobre las columnas utilizadas con mayor frecuencia en filtros (WHERE), uniones (JOIN) y ordenamientos (ORDER BY).
+To improve the performance of the system's most expensive queries, several indexes were implemented on the highest-volume tables and on the columns most frequently used in filters (`WHERE`), joins (`JOIN`) and sorting (`ORDER BY`).
 
-Los índices creados fueron los siguientes:
-
-| Índice | Tabla | Objetivo |
+| Index | Table | Purpose |
 |---|---|---|
-| idx_trips_composite_joins | trips | Optimizar los JOIN entre viajes, vehículos, conductores y rutas para consultas sobre viajes completados. |
-| idx_trips_departure | trips | Mejorar las búsquedas por rangos de fechas utilizando departure_datetime. |
-| idx_deliveries_scheduled_datetime | deliveries | Optimizar consultas que filtran entregas realizadas por fecha programada. |
-| idx_deliveries_status | deliveries | Acelerar consultas que filtran por estado de la entrega. |
-| idx_maintenance_vehicle_cost | maintenance | Optimizar la búsqueda de mantenimientos asociados a cada vehículo. |
-| idx_drivers_status_license | drivers | Mejorar las consultas sobre conductores activos y vencimiento de licencias. |
-| idx_routes_metrics | routes | Facilitar el acceso a información de rutas utilizada en cálculos de distancia y destino. |
-| idx_vehicles_status | vehicles | Optimizar filtros sobre el estado de los vehículos. |
+| `idx_trips_composite_joins` | trips | Optimize JOINs between trips, vehicles, drivers and routes for completed-trip queries. |
+| `idx_trips_departure` | trips | Improve date-range searches using `departure_datetime`. |
+| `idx_deliveries_scheduled_datetime` | deliveries | Optimize queries that filter deliveries by scheduled date. |
+| `idx_deliveries_status` | deliveries | Speed up queries that filter by delivery status. |
+| `idx_maintenance_vehicle_cost` | maintenance | Optimize lookups of maintenance records associated with each vehicle. |
+| `idx_drivers_status_license` | drivers | Improve queries on active drivers and license expiration. |
+| `idx_routes_metrics` | routes | Facilitate access to route information used in distance and destination calculations. |
+| `idx_vehicles_status` | vehicles | Optimize filters on vehicle status. |
 
-Es importante mencionar que la creación de un índice no implica que PostgreSQL lo utilice en todas las consultas. El optimizador del motor de base de datos evalúa diferentes estrategias de ejecución y selecciona aquella cuyo costo estimado sea menor.
+It is important to note that creating an index does not mean PostgreSQL will use it in every query. The database optimizer evaluates different execution strategies and picks the one with the lowest estimated cost.
 
-En los casos donde el plan de ejecución muestra un Sequential Scan (Seq Scan), esto generalmente ocurre por una de las siguientes razones:
+When the execution plan shows a Sequential Scan (Seq Scan), it is usually for one of these reasons:
 
-- La tabla contiene pocos registros y recorrerla completamente resulta más económico que acceder mediante un índice.
-- La consulta necesita procesar una gran parte de la tabla, por lo que el índice aporta poco beneficio.
-- La condición del filtro utiliza funciones o expresiones que impiden aprovechar directamente el índice.
-- El mayor costo de la consulta se encuentra en operaciones posteriores como JOIN, GROUP BY, ORDER BY o funciones de ventana, y no en la búsqueda inicial de registros.
+- The table has few records, so scanning it fully is cheaper than going through an index.
+- The query needs to process a large part of the table, so the index adds little benefit.
+- The filter condition uses functions or expressions that prevent direct use of the index.
+- The main cost of the query lies in later operations such as JOIN, GROUP BY, ORDER BY or window functions, not in the initial record lookup.
 
-A continuación, se presenta el análisis individual de cada consulta utilizando los resultados obtenidos con EXPLAIN ANALYZE.
+Below is the individual analysis of each query using the `EXPLAIN ANALYZE` results.
 
-### 3.2 Análisis individual de las consultas
+### 3.2 Individual Query Analysis
 
-#### Query 1: Contar vehículos por tipo
+**Query 1: Count vehicles by type**
+*Business problem:* Understand the composition of the fleet.
+- Execution time: 0.295 ms
+- Plan used: Seq Scan + HashAggregate
 
-**Problema de negocio:** Conocer la composición de la flota
+Although there is an index on vehicle status (`idx_vehicles_status`), this query does not filter by that column and only needs to scan the 200 records in the table to group them by type. Given the small table size, PostgreSQL determines that a sequential scan is the most efficient option.
 
-**Consulta 1 – Cantidad de vehículos por tipo**
+**Query 2: List drivers with licenses about to expire**
+*Business problem:* Prevent legal issues from expired licenses.
+- Execution time: 0.344 ms
+- Plan used: Seq Scan
 
-- Tiempo de ejecución: 0.295 ms
-- Plan utilizado: Seq Scan + HashAggregate
+The index `idx_drivers_status_license` was created to optimize searches on active drivers and license expiration dates. However, this query only filters by `license_expiry` and not by `status`, a condition needed to take advantage of the partial index. In addition, the table has only 400 records, so PostgreSQL opts for a sequential scan.
 
-Aunque existe un índice sobre el estado de los vehículos (idx_vehicles_status), esta consulta no filtra por dicha columna y únicamente necesita recorrer los 200 registros de la tabla para agruparlos por tipo. Debido al tamaño reducido de la tabla, PostgreSQL determina que un recorrido secuencial es la alternativa más eficiente.
+**Query 3: Total trips by status**
+*Business problem:* Monitor ongoing operations.
+- Execution time: 52.154 ms
+- Plan used: Seq Scan + HashAggregate
 
-#### Query 2: Listar conductores con licencia próxima a vencer
+Although there are indexes on the `trips` table, the query must read all 100,000 records to group them by status. Since practically the whole table must be processed, an index offers no significant improvement and PostgreSQL chooses a sequential scan.
 
-**Problema de negocio:** Prevenir problemas legales por licencias vencidas
+**Query 4: Total deliveries by destination city in the last 2 months**
+*Business problem:* Identify demand by city for resource planning.
+- Execution time: 181.751 ms
+- Plan used: Bitmap Index Scan
 
-**Consulta 2 – Licencias próximas a vencer**
+Here PostgreSQL uses the `idx_trips_departure` index through a Bitmap Index Scan to retrieve only the trips from the last 60 days. It then performs the JOINs with the `deliveries` and `routes` tables. Although indexes also exist on routes and trips, the optimizer determines that the date index provides the greatest reduction in records.
 
-- Tiempo de ejecución: 0.344 ms
-- Plan utilizado: Seq Scan
+**Query 5: Active drivers with number of completed trips**
+*Business problem:* Evaluate workload per driver.
+- Execution time: 160.908 ms
+- Plan used: Seq Scan
 
-Se creó el índice idx_drivers_status_license para optimizar búsquedas sobre conductores activos y fechas de vencimiento de licencia. Sin embargo, esta consulta únicamente filtra por license_expiry y no por status, condición necesaria para aprovechar el índice parcial. Además, la tabla contiene únicamente 400 registros, por lo que PostgreSQL opta por un recorrido secuencial.
+Although the `idx_drivers_status_license` index exists, the `drivers` table is small and the query must scan the entire `trips` table to compute the performance metrics. The main cost is in the aggregations over trips, not in finding drivers, so PostgreSQL does not consider the index necessary.
 
-#### Query 3: Total de viajes por estado
+**Query 6: Average deliveries per driver in the last 6 months**
+*Business problem:* Measure individual driver productivity.
+- Execution time: 213.548 ms
+- Plan used: Bitmap Index Scan
 
-**Problema de negocio:** Monitorear operaciones en curso
+The `idx_trips_departure` index is used to retrieve only trips made during the last six months. This initial reduction lowers the volume of data before running the joins and groupings needed to compute each driver's productivity.
 
-**Consulta 3 – Cantidad de viajes por estado**
+**Query 7: Routes with highest fuel consumption per kilometer**
+*Business problem:* Identify inefficient routes for optimization.
+- Execution time: 169.996 ms
+- Plan used: Parallel Seq Scan
 
-- Tiempo de ejecución: 52.154 ms
-- Plan utilizado: Seq Scan + HashAggregate
+Although the `idx_routes_metrics` index was created, most of the workload is processing the `trips` table, where a large number of records meet the filter conditions. In this scenario PostgreSQL gets better performance by distributing the sequential scan across several processes (Parallel Seq Scan) than by using an index.
 
-Aunque existen índices sobre la tabla trips, la consulta necesita leer los 100.000 registros para agruparlos por estado. Como prácticamente toda la tabla debe procesarse, un índice no representa una mejora significativa y PostgreSQL selecciona un recorrido secuencial.
+**Query 8: Delayed deliveries by day of the week**
+*Business problem:* Identify delay patterns to improve planning.
+- Execution time: 64.293 ms
+- Plan used: Bitmap Index Scan
 
-#### Query 4: Total de entregas por ciudad destino en los últimos 2 meses
+The query uses the `idx_deliveries_scheduled_datetime` index, retrieving only deliveries from the last 90 days before grouping by day of the week.
 
-**Problema de negocio:** Identificar demanda por ciudad para planificación de recursos
+**Query 9: Maintenance cost per kilometer traveled**
+*Business problem:* Evaluate the cost-benefit of each vehicle type.
+- Execution time: 2939.531 ms
+- Plan used: Index Scan
 
-**Consulta 4 – Ciudades con mayor número de entregas**
+This query uses the `idx_maintenance_vehicle_cost` index to efficiently access the maintenance records of each vehicle. Even so, it remains the most expensive query because of the large number of JOINs, aggregations and calculations required, plus the large volume of data processed.
 
-- Tiempo de ejecución: 181.751 ms
-- Plan utilizado: Bitmap Index Scan
+**Query 10: Driver efficiency ranking using Window Functions**
+*Business problem:* Identify top performers for incentives.
+- Execution time: 230.521 ms
+- Plan used: Bitmap Index Scan
 
-En esta consulta PostgreSQL aprovecha el índice idx_trips_departure, utilizando un Bitmap Index Scan para recuperar únicamente los viajes correspondientes a los últimos 60 días. Posteriormente realiza los JOIN con las tablas deliveries y routes. Aunque también existen índices sobre rutas y viajes, el optimizador determina que el índice sobre la fecha es el que ofrece la mayor reducción de registros.
+The `idx_trips_departure` index is used to limit the analysis to trips from the last three months. Most of the execution time comes afterward, from the window functions used to compute the driver ranking.
 
-#### Query 5: Conductores activos con cantidad de viajes completados
+**Query 11: Trip trend analysis with LAG and LEAD**
+*Business problem:* Project future needs based on trends.
+- Execution time: 146.630 ms
+- Plan used: Seq Scan
 
-**Problema de negocio:** Evaluar carga de trabajo por conductor
+Although the composite index `idx_trips_composite_joins` exists, it is designed mainly to optimize joins between tables, not queries that group only by date. In addition, about 90% of trips have the `completed` status, so PostgreSQL considers it more efficient to scan the entire table than to use a low-selectivity index.
 
-**Consulta 5 – Rendimiento de conductores activos**
+**Query 12: Pivot of deliveries by hour and day of the week**
+*Business problem:* Optimize operating hours and staffing.
+- Execution time: 266.584 ms
+- Plan used: Parallel Seq Scan
 
-- Tiempo de ejecución: 160.908 ms
-- Plan utilizado: Seq Scan
+Although the `idx_deliveries_scheduled_datetime` index exists, the query applies the function `EXTRACT(HOUR FROM scheduled_datetime)`. By using a function on the indexed column, PostgreSQL cannot directly use the index for that part of the filter and decides on a parallel sequential scan, which is more efficient for this type of processing.
 
-Aunque existe el índice idx_drivers_status_license, la tabla drivers es pequeña y la consulta debe recorrer completamente la tabla trips para calcular las métricas de desempeño. El costo principal se encuentra en las agregaciones sobre los viajes y no en la búsqueda de conductores, por lo que PostgreSQL no considera necesario utilizar el índice.
+### 3.3 Comparison of Times Without and With Indexes
 
-#### Query 6: Promedio de entregas por conductor en los últimos 6 meses
-
-**Problema de negocio:** Medir productividad individual de conductores
-
-**Consulta 6 – Productividad por conductor**
-
-- Tiempo de ejecución: 213.548 ms
-- Plan utilizado: Bitmap Index Scan
-
-El índice idx_trips_departure es utilizado para recuperar únicamente los viajes realizados durante los últimos seis meses. Esta reducción inicial permite disminuir el volumen de información antes de ejecutar las uniones y agrupaciones necesarias para calcular la productividad de cada conductor.
-
-#### Query 7: Rutas con mayor consumo de combustible por kilómetro
-
-**Problema de negocio:** Identificar rutas ineficientes para optimización
-
-**Consulta 7 – Consumo promedio de combustible por ruta**
-
-- Tiempo de ejecución: 169.996 ms
-- Plan utilizado: Parallel Seq Scan
-
-Aunque se creó el índice idx_routes_metrics, la mayor carga de trabajo corresponde al procesamiento de la tabla trips, donde una gran cantidad de registros cumplen las condiciones del filtro. En este escenario PostgreSQL obtiene un mejor rendimiento distribuyendo el recorrido secuencial entre varios procesos (Parallel Seq Scan) que utilizando un índice.
-
-#### Query 8: Análisis de entregas retrasadas por día de la semana
-
-**Problema de negocio:** Identificar patrones de retraso para mejorar planificación
-
-**Consulta 8 – Entregas por día de la semana**
-
-- Tiempo de ejecución: 64.293 ms
-- Plan utilizado: Bitmap Index Scan
-
-La consulta aprovecha el índice idx_deliveries_scheduled_datetime, recuperando unicamente las entregas realizadas durante los últimos 90 días antes de efectuar la agrupación por día de la semana.
-
-#### Query 9: Costo de mantenimiento por kilómetro recorrido
-
-**Problema de negocio:** Evaluar costo-beneficio de cada tipo de vehículo
-
-**Consulta 9 – Costo de mantenimiento por kilómetro**
-
-- Tiempo de ejecución: 2939.531 ms
-- Plan utilizado: Index Scan
-
-Esta consulta utiliza el índice idx_maintenance_vehicle_cost para acceder eficientemente a los registros de mantenimiento de cada vehículo. No obstante, sigue siendo la consulta más costosa debido al elevado número de JOIN, agregaciones y cálculos requeridos, además del gran volumen de datos procesados.
-
-#### Query 10: Ranking de conductores por eficiencia usando Window Functions
-
-**Problema de negocio:** Identificar top performers para incentivos
-
-**Consulta 10 – Ranking de conductores**
-
-- Tiempo de ejecución: 230.521 ms
-- Plan utilizado: Bitmap Index Scan
-
-Se utiliza el índice idx_trips_departure para limitar el análisis a los viajes de los últimos tres meses. El mayor tiempo de ejecución proviene posteriormente de las funciones de ventana (Window Functions) empleadas para calcular el ranking de los conductores.
-
-#### Query 11: Análisis de tendencia de viajes con LAG y LEAD
-
-**Problema de negocio:** Proyectar necesidades futuras basadas en tendencias
-
-**Consulta 11 – Tendencia mensual de viajes completados**
-
-- Tiempo de ejecución: 146.630 ms
-- Plan utilizado: Seq Scan
-
-Aunque existe el índice compuesto idx_trips_composite_joins, este está diseñado principalmente para optimizar uniones entre tablas y no consultas que agrupan únicamente por fecha. Además, aproximadamente el 90 % de los viajes corresponden al estado completed, por lo que PostgreSQL considera más eficiente recorrer toda la tabla que utilizar un índice con baja selectividad.
-
-#### Query 12: Pivot de entregas por hora y día de la semana
-
-**Problema de negocio:** Optimizar horarios de operación y personal
-
-**Consulta 12 – Distribución de entregas por hora**
-
-- Tiempo de ejecución: 266.584 ms
-- Plan utilizado: Parallel Seq Scan
-
-Aunque existe el índice idx_deliveries_scheduled_datetime, la consulta aplica la función EXTRACT(HOUR FROM scheduled_datetime). Al utilizar una función sobre la columna indexada, PostgreSQL no puede aprovechar directamente el índice para esa parte del filtro y decide realizar un recorrido secuencial paralelo, que resulta más eficiente para este tipo de procesamiento.
-
-### 3.3 Comparación de tiempos sin índices y con índices
-
-| Consulta | Tiempo sin índices (ms) | Tiempo con índices (ms) | Diferencia (ms) | Mejora (%) | Observación |
+| Query | Without indexes (ms) | With indexes (ms) | Difference (ms) | Improvement (%) | Observation |
 |---|---|---|---|---|---|
-| 1 | 0.191 | 0.295 | +0.104 | -54.5% | Sin cambios. La tabla tiene solo 200 registros, el optimizador mantiene Seq Scan. |
-| 2 | 0.141 | 0.344 | +0.203 | -144.0% | También es una tabla pequeña; el índice no aporta beneficio. |
-| 3 | 35.274 | 52.154 | +16.880 | -47.9% | Consulta agregada sobre toda la tabla; debe leer todos los registros. |
-| 4 | 213.325 | 181.751 | -31.574 | 14.8% | El índice sobre fecha reduce el conjunto de viajes antes del JOIN. |
-| 5 | 69.153 | 160.908 | +91.755 | -132.7% | El índice no ayuda porque la consulta sigue leyendo toda la tabla Trips. |
-| 6 | 153.992 | 213.548 | +59.556 | -38.7% | El filtro usa índice, pero el costo de JOIN y GROUP BY domina el tiempo. |
-| 7 | 188.014 | 169.996 | -18.018 | 9.6% | Ligera mejora gracias al índice sobre fechas. |
-| 8 | 145.466 | 64.293 | -81.173 | 55.8% | Gran mejora. Se reemplaza Seq Scan por Bitmap Index Scan sobre scheduled_datetime. |
-| 9 | 12130.860 | 2939.531 | -9191.329 | 75.8% | Mayor mejora del proyecto. El índice elimina millones de comparaciones y usa Index Scan + Memoize. |
-| 10 | 163.943 | 230.521 | +66.578 | -40.6% | El índice filtra pocos registros; el costo principal sigue siendo la agregación. |
-| 11 | 148.604 | 146.630 | -1.974 | 1.3% | Diferencia mínima; la ordenación sigue siendo el cuello de botella. |
-| 12 | 262.057 | 266.584 | +4.527 | -1.7% | Sin cambios significativos. Continúa usando Parallel Seq Scan. |
+| 1 | 0.191 | 0.295 | +0.104 | -54.5% | No change. The table has only 200 records; the optimizer keeps the Seq Scan. |
+| 2 | 0.141 | 0.344 | +0.203 | -144.0% | Also a small table; the index gives no benefit. |
+| 3 | 35.274 | 52.154 | +16.880 | -47.9% | Aggregate query over the whole table; it must read all records. |
+| 4 | 213.325 | 181.751 | -31.574 | 14.8% | The date index reduces the set of trips before the JOIN. |
+| 5 | 69.153 | 160.908 | +91.755 | -132.7% | The index does not help because the query still reads the whole Trips table. |
+| 6 | 153.992 | 213.548 | +59.556 | -38.7% | The filter uses the index, but the JOIN and GROUP BY cost dominates the time. |
+| 7 | 188.014 | 169.996 | -18.018 | 9.6% | Slight improvement thanks to the date index. |
+| 8 | 145.466 | 64.293 | -81.173 | 55.8% | Big improvement. Seq Scan replaced by Bitmap Index Scan on `scheduled_datetime`. |
+| 9 | 12130.860 | 2939.531 | -9191.329 | 75.8% | Biggest improvement of the project. The index removes millions of comparisons and uses Index Scan + Memoize. |
+| 10 | 163.943 | 230.521 | +66.578 | -40.6% | The index filters few records; the main cost remains the aggregation. |
+| 11 | 148.604 | 146.630 | -1.974 | 1.3% | Minimal difference; sorting remains the bottleneck. |
+| 12 | 262.057 | 266.584 | +4.527 | -1.7% | No significant change. Still uses Parallel Seq Scan. |
 
-La comparación demuestra que los índices son más efectivos cuando la consulta realiza búsquedas selectivas sobre columnas utilizadas en WHERE, JOIN o ORDER BY. Cuando una consulta necesita procesar la mayor parte de la tabla o ejecutar agregaciones complejas, el optimizador suele preferir un Sequential Scan, ya que el costo adicional de acceder al índice supera el beneficio obtenido. Por ello, la creación de índices debe realizarse con base en el patrón de consultas y no de manera indiscriminada.
+The comparison shows that indexes are most effective when a query performs selective searches on columns used in `WHERE`, `JOIN` or `ORDER BY`. When a query needs to process most of the table or run complex aggregations, the optimizer usually prefers a Sequential Scan, since the extra cost of accessing the index outweighs the benefit. For this reason, indexes should be created based on query patterns and not indiscriminately.
 
 ---
 
-## 4. Arquitectura AWS
+## 4. AWS Architecture
 
-### 4.1 Introducción
+### 4.1 Introduction
 
-Este documento describe el diseño de la arquitectura AWS implementada para FleetLogix, explicando los servicios utilizados, el proceso de configuración de la infraestructura, el funcionamiento de las funciones Lambda y el procedimiento de migración de la base de datos PostgreSQL hacia Amazon RDS. El objetivo es documentar el comportamiento del sistema sin necesidad de ejecutarlo, permitiendo comprender cómo interactúan los diferentes componentes dentro de la solución propuesta.
+This section describes the design of the AWS architecture implemented for FleetLogix. It explains the services used, the infrastructure setup process, how the Lambda functions work, and the procedure for migrating the PostgreSQL database to Amazon RDS. The goal is to document the system's behavior without having to run it, so the reader can understand how the different components of the proposed solution interact.
 
-### 4.2 Visión general de la arquitectura
+### 4.2 Architecture Overview
 
-> **[Imagen del PDF original: diagrama "FleetLogix – Arquitectura AWS para Análisis en Tiempo Real" (plataforma serverless e integrada para monitoreo, análisis y toma de decisiones en operaciones logísticas, región us-east-1). Se organiza en: Fuentes de datos (PostgreSQL operacional on-premise, hojas de cálculo y CSV, GPS/telemática, app móvil, APIs externas); Ingesta de datos (AWS DMS, AWS Glue Data Catalog, Amazon Kinesis Data Streams); Almacenamiento (Amazon S3 Data Lake con raw-data, processed-data, curated-data, backups y logs); Procesamiento (AWS Glue ETL Jobs, Amazon EMR con Apache Spark, AWS Lambda, Amazon Athena); Análisis y almacén (Amazon Redshift como Data Warehouse, Redshift Spectrum, Amazon QuickSight); Visualización y usuarios (dashboards, usuarios de negocio, analistas de datos, app móvil); Amazon DynamoDB para estado en tiempo real (deliveries_status, vehicle_tracking, routes_waypoints, alerts_history); Amazon RDS for PostgreSQL (fleetlogix-db) con AWS Backup; funciones Lambda (lambda_verificar_entrega con API Gateway, lambda_calcular_eta con EventBridge cada 5 minutos, lambda_alerta_desvio con Kinesis Data Streams) y Amazon SNS para alertas; servicios transversales (IAM, CloudWatch, SNS, CloudTrail, KMS y S3 para logs y archivos). Beneficios: escalabilidad automática, alta disponibilidad y resiliencia, procesamiento en tiempo real, optimización de costos, seguridad integrada y análisis avanzado.]**
+> **Figure (see PDF):** diagram "FleetLogix – AWS Architecture for Real-Time Analytics" (a serverless, integrated platform for monitoring, analysis and decision making in logistics operations). It is organized into:
+> - **Data sources:** on-premise operational PostgreSQL, spreadsheets and CSV files, GPS/telematics, mobile app, external APIs.
+> - **Data ingestion:** AWS DMS, AWS Glue Data Catalog, Amazon Kinesis Data Streams.
+> - **Storage:** Amazon S3 Data Lake (raw-data, processed-data, curated-data, backups, logs).
+> - **Processing:** AWS Glue ETL Jobs, Amazon EMR with Apache Spark, AWS Lambda, Amazon Athena.
+> - **Analytics and warehouse:** Amazon Redshift as Data Warehouse, Redshift Spectrum, Amazon QuickSight.
+> - **Visualization and users:** dashboards, business users, data analysts, mobile app.
+> - **Real-time state:** Amazon DynamoDB (deliveries_status, vehicle_tracking, routes_waypoints, alerts_history).
+> - **Operational database:** Amazon RDS for PostgreSQL (fleetlogix-db) with AWS Backup.
+> - **Lambda functions:** lambda_verificar_entrega (with API Gateway), lambda_calcular_eta (with EventBridge every 5 minutes), lambda_alerta_desvio (with Kinesis Data Streams), and Amazon SNS for alerts.
+> - **Cross-cutting services:** IAM, CloudWatch, SNS, CloudTrail, KMS, and S3 for logs and files.
+> - **Benefits:** automatic scalability, high availability and resilience, real-time processing, cost optimization, built-in security, advanced analytics.
 
-La arquitectura de FleetLogix fue diseñada para integrar el procesamiento de datos históricos y el monitoreo en tiempo real dentro de un entorno escalable y seguro en AWS. El objetivo principal es centralizar la información proveniente de diferentes fuentes, transformarla mediante procesos ETL y ponerla a disposición de los usuarios de negocio a través de dashboards e indicadores que faciliten la toma de decisiones.
+The FleetLogix architecture was designed to integrate historical data processing and real-time monitoring in a scalable, secure AWS environment. Its main goal is to centralize information from different sources, transform it through ETL processes, and make it available to business users through dashboards and indicators that support decision making.
 
-El flujo de datos inicia con las fuentes operacionales, donde PostgreSQL almacena la información transaccional generada por la operación logística, incluyendo vehículos, conductores, rutas, viajes, entregas y mantenimientos. Adicionalmente, la plataforma puede recibir información desde archivos CSV, hojas de cálculo, dispositivos GPS instalados en los vehículos, aplicaciones móviles utilizadas por los conductores y APIs externas que proporcionan información como tráfico, clima y mapas.
+The data flow starts at the operational sources, where PostgreSQL stores the transactional information generated by the logistics operation, including vehicles, drivers, routes, trips, deliveries and maintenance. The platform can also receive information from CSV files, spreadsheets, GPS devices installed in vehicles, mobile apps used by drivers, and external APIs providing traffic, weather and map data.
 
-Para la ingesta de datos, AWS Database Migration Service (DMS) replica continuamente la información almacenada en PostgreSQL hacia la nube, permitiendo mantener sincronizados los datos sin afectar el rendimiento del sistema transaccional. Paralelamente, AWS Glue Data Catalog registra la estructura y el esquema de los datos, facilitando su descubrimiento y utilización por parte de los diferentes servicios analíticos. Cuando se generan eventos en tiempo real, como actualizaciones de ubicación GPS o cambios en el estado de una entrega, Amazon Kinesis recibe estos flujos de información para su procesamiento inmediato.
+For data ingestion, AWS Database Migration Service (DMS) continuously replicates the information stored in PostgreSQL to the cloud, keeping the data in sync without affecting the performance of the transactional system. In parallel, AWS Glue Data Catalog records the structure and schema of the data, making it easier for the different analytics services to discover and use it. When real-time events are generated, such as GPS location updates or changes in delivery status, Amazon Kinesis receives these streams for immediate processing.
 
-Toda la información es almacenada inicialmente en Amazon S3, el cual funciona como el Data Lake de la solución. Dentro de este repositorio se organizan diferentes zonas según el estado de los datos: una zona Raw donde se conservan los datos originales, una zona Processed con información previamente transformada y validada, una zona Curated con datos optimizados para análisis, además de áreas destinadas al almacenamiento de respaldos y registros de ejecución del sistema.
+All information is initially stored in Amazon S3, which acts as the solution's Data Lake. Inside this repository, data is organized into zones according to its state: a Raw zone where original data is kept, a Processed zone with previously transformed and validated information, a Curated zone with data optimized for analysis, plus areas for backups and system execution logs.
 
-El procesamiento de los datos es realizado principalmente por AWS Glue, donde se ejecutan los procesos ETL encargados de extraer la información, limpiarla, validar reglas de negocio, calcular indicadores y preparar los datos para su análisis. Cuando el volumen de información aumenta considerablemente, Amazon EMR utiliza Apache Spark para distribuir las cargas de trabajo y procesar grandes cantidades de registros de forma paralela. Para consultas rápidas directamente sobre los archivos almacenados en S3, Amazon Athena permite ejecutar consultas SQL sin necesidad de cargar previamente los datos en una base de datos.
+Data processing is mainly performed by AWS Glue, where the ETL processes run to extract the information, clean it, validate business rules, compute indicators and prepare the data for analysis. When data volume grows considerably, Amazon EMR uses Apache Spark to distribute workloads and process large numbers of records in parallel. For fast queries directly on files stored in S3, Amazon Athena allows SQL queries to run without first loading the data into a database.
 
-Una vez transformada, la información es cargada en Amazon Redshift, que actúa como el Data Warehouse de la organización. Allí se implementa un modelo dimensional compuesto por tablas de dimensiones y tablas de hechos, optimizado para consultas analíticas de alto rendimiento. En aquellos casos donde se requiere consultar directamente archivos almacenados en el Data Lake, Redshift Spectrum permite acceder a la información sin necesidad de duplicarla dentro del Data Warehouse.
+Once transformed, the information is loaded into Amazon Redshift, which acts as the organization's Data Warehouse. A dimensional model made up of dimension and fact tables is implemented there, optimized for high-performance analytical queries. Where files stored in the Data Lake need to be queried directly, Redshift Spectrum allows access to the information without duplicating it inside the Data Warehouse.
 
-Los datos consolidados son consumidos por Amazon QuickSight, donde se construyen dashboards interactivos e indicadores de desempeño relacionados con entregas, consumo de combustible, eficiencia operativa, desempeño de conductores, tiempos de entrega y demás métricas estratégicas. Estos tableros son utilizados tanto por usuarios de negocio como por analistas de datos para apoyar la toma de decisiones basadas en información actualizada.
+The consolidated data is consumed by Amazon QuickSight, where interactive dashboards and performance indicators are built for deliveries, fuel consumption, operational efficiency, driver performance, delivery times and other strategic metrics. These dashboards are used by both business users and data analysts to support decisions based on up-to-date information.
 
-Además del procesamiento histórico, la arquitectura incorpora un componente de procesamiento en tiempo real. La información proveniente de dispositivos GPS y aplicaciones móviles es almacenada temporalmente en Amazon DynamoDB, donde se mantiene el estado actual de las entregas, la ubicación de los vehículos, los puntos de las rutas y el historial de alertas generadas durante la operación.
+In addition to historical processing, the architecture includes a real-time processing component. Information coming from GPS devices and mobile apps is temporarily stored in Amazon DynamoDB, which maintains the current state of deliveries, vehicle locations, route points and the history of alerts generated during operation.
 
-Sobre esta información actúan varias funciones implementadas con AWS Lambda. Estas funciones ejecutan procesos automáticos como la verificación del estado de una entrega, el cálculo periódico del tiempo estimado de llegada (ETA) y la detección de desvíos de ruta mediante el análisis continuo de la información recibida desde Amazon Kinesis. Cuando se identifica un evento importante, las funciones generan notificaciones utilizando Amazon SNS, permitiendo alertar oportunamente a los equipos de operación.
+Several AWS Lambda functions act on this information. These functions run automatic processes such as checking the status of a delivery, periodically calculating the estimated time of arrival (ETA), and detecting route deviations by continuously analyzing the information received from Amazon Kinesis. When an important event is identified, the functions generate notifications through Amazon SNS, allowing operations teams to be alerted in time.
 
-Toda la plataforma se encuentra respaldada por servicios transversales que garantizan la seguridad, disponibilidad y monitoreo de la solución. AWS IAM administra la autenticación y los permisos de acceso a los diferentes recursos, AWS CloudWatch supervisa el rendimiento del sistema y registra métricas y eventos, AWS CloudTrail mantiene un historial de auditoría de todas las acciones realizadas dentro de la infraestructura, AWS KMS protege la información mediante cifrado y AWS Backup automatiza la generación de copias de seguridad de los servicios críticos.
+The whole platform is backed by cross-cutting services that guarantee security, availability and monitoring. AWS IAM manages authentication and access permissions to the different resources, AWS CloudWatch monitors system performance and records metrics and events, AWS CloudTrail keeps an audit history of every action performed in the infrastructure, AWS KMS protects the information through encryption, and AWS Backup automates backup creation for critical services.
 
-Gracias a esta arquitectura, FleetLogix dispone de una plataforma moderna, escalable y altamente disponible que integra el procesamiento de datos históricos con análisis en tiempo real, permitiendo optimizar la operación logística, automatizar procesos críticos y ofrecer información confiable para la toma de decisiones estratégicas.
+Thanks to this architecture, FleetLogix has a modern, scalable and highly available platform that integrates historical data processing with real-time analysis, making it possible to optimize logistics operations, automate critical processes and provide reliable information for strategic decision making.
 
-### 4.3 Recursos creados en aws_setup.py
+### 4.3 Resources Created in `aws_setup.py`
 
-El archivo aws_setup.py automatiza la creación y configuración de la infraestructura básica de AWS necesaria para soportar la plataforma FleetLogix. Su propósito es preparar el entorno donde posteriormente se ejecutarán los procesos ETL, las funciones Lambda y el almacenamiento de información histórica y en tiempo real.
+The `aws_setup.py` file automates the creation and configuration of the basic AWS infrastructure needed to support the FleetLogix platform. Its purpose is to prepare the environment where the ETL processes, Lambda functions, and historical and real-time data storage will later run.
 
-#### Amazon RDS PostgreSQL
+**Amazon RDS PostgreSQL**
 
-El script crea una instancia administrada de PostgreSQL utilizando Amazon RDS.
+The script creates a managed PostgreSQL instance using Amazon RDS. The configuration sets a `db.t3.micro` instance (AWS free tier), PostgreSQL version 15.4, 20 GB of storage, automatic backups kept for seven days, and defined maintenance and backup windows.
 
-La configuración establece una instancia db.t3.micro, correspondiente al nivel gratuito de AWS, con PostgreSQL versión 15.4, 20 GB de almacenamiento, respaldos automáticos durante siete días y ventanas definidas para mantenimiento y copias de seguridad.
+The purpose of this instance is to host FleetLogix's operational database in the cloud, removing the need to manage its own server and ensuring high availability and recovery from failures.
 
-El propósito de esta instancia es alojar la base de datos operacional de FleetLogix dentro de la nube, eliminando la necesidad de administrar un servidor propio y garantizando alta disponibilidad y recuperación ante fallos.
+**Amazon S3**
 
-#### Amazon S3
+A bucket named `fleetlogix-data` is then created, used as the project's Data Lake. The following folders are created automatically inside the bucket:
 
-Posteriormente se crea un bucket denominado fleetlogix-data, utilizado como Data Lake del proyecto.
+- `raw-data/`
+- `processed-data/`
+- `backups/`
+- `logs/`
 
-Dentro del bucket se crean automáticamente las carpetas:
+In addition, a lifecycle policy is configured that automatically moves data stored in the `raw-data` folder to Glacier after 90 days, significantly reducing storage costs.
 
-- raw-data/
-- processed-data/
-- backups/
-- logs/
+**Amazon DynamoDB**
 
-Además, se configura una regla de ciclo de vida (Lifecycle Policy) que mueve automáticamente los datos almacenados en la carpeta raw-data hacia Glacier después de 90 días, reduciendo significativamente los costos de almacenamiento.
+The script creates four NoSQL tables for real-time processing.
 
-#### Amazon DynamoDB
+- `deliveries_status`: stores the current status of each delivery, showing whether an order is pending, in transit or delivered.
+- `vehicle_tracking`: continuously records the GPS location of each vehicle along with the update date and time.
+- `routes_waypoints`: stores the GPS points that make up each planned route, information later used to detect deviations.
+- `alerts_history`: keeps the complete history of alerts generated by the system during the logistics operation.
 
-El script crea cuatro tablas NoSQL destinadas al procesamiento en tiempo real.
+**AWS Backup**
 
-**deliveries_status**
+After creating the RDS instance, the script generates an initial snapshot and configures a seven-day retention policy for automatic backups. This ensures the information can be recovered in case of system failures.
 
-Almacena el estado actual de cada entrega, permitiendo conocer si una orden se encuentra pendiente, en tránsito o entregada.
+**AWS IAM**
 
-**vehicle_tracking**
-
-Registra continuamente la ubicación GPS de cada vehículo junto con la fecha y hora de la actualización.
-
-**routes_waypoints**
-
-Almacena los puntos GPS que conforman cada ruta planificada, información utilizada posteriormente para detectar desviaciones.
-
-**alerts_history**
-
-Conserva el historial completo de alertas generadas por el sistema durante la operación logística.
-
-#### AWS Backup
-
-Después de crear la instancia RDS, el script genera un snapshot inicial y configura una política de retención de siete días para los respaldos automáticos.
-
-Esto garantiza la recuperación de la información ante posibles fallos del sistema.
-
-#### AWS IAM
-
-Finalmente se crea un rol denominado FleetLogixLambdaRole, el cual será utilizado por todas las funciones Lambda.
-
-A este rol se le asignan las políticas necesarias para acceder a:
+Finally, a role named `FleetLogixLambdaRole` is created, to be used by all the Lambda functions. The role is assigned the policies needed to access:
 
 - AWS Lambda Basic Execution
 - Amazon DynamoDB
 - Amazon S3
 - Amazon SNS
 
-De esta manera las funciones Lambda pueden consultar tablas, almacenar información y enviar notificaciones sin utilizar credenciales explícitas.
+This way the Lambda functions can query tables, store information and send notifications without explicit credentials.
 
-### 4.4 Funciones implementadas en lambda_functions.py
+### 4.4 Functions Implemented in `lambda_functions.py`
 
-El archivo lambda_functions.py contiene tres funciones Lambda diseñadas para automatizar procesos críticos de la operación logística mediante un modelo completamente serverless.
+The `lambda_functions.py` file contains three Lambda functions designed to automate critical logistics processes using a fully serverless model. Each function responds to a different event and runs specific tasks within the platform.
 
-Cada función responde a un evento diferente y ejecuta tareas específicas dentro de la plataforma.
+**Lambda function: Verify Delivery**
 
-#### Función Lambda: Verificar Entrega
+The `lambda_verificar_entrega()` function checks whether a delivery has been completed by querying the `deliveries_status` table in Amazon DynamoDB directly.
 
-La función lambda_verificar_entrega() tiene como objetivo verificar si una entrega ya fue completada consultando directamente la tabla deliveries_status almacenada en Amazon DynamoDB.
+When the mobile app registers a delivery, it sends an event containing the delivery identifier (`delivery_id`) and, optionally, the tracking number (`tracking_number`).
 
-Cuando la aplicación móvil registra una entrega, envía un evento que contiene el identificador de la entrega (delivery_id) y, opcionalmente, el número de seguimiento (tracking_number).
+The function first validates that the identifier was received. If it is missing, it responds immediately with an HTTP 400 code indicating the parameter is required.
 
-La función valida inicialmente que el identificador haya sido recibido. Si este dato no existe, responde inmediatamente con un código HTTP 400 indicando que el parámetro es obligatorio.
+It then connects to the `deliveries_status` table and looks up the matching record by the primary key `delivery_id`.
 
-Posteriormente establece conexión con la tabla deliveries_status y busca el registro correspondiente mediante la clave primaria delivery_id.
+If the record exists, it retrieves the delivery's current status, checks whether that status is `delivered`, and builds a response that includes the delivery identifier, the tracking number, the current status and the recorded delivery date.
 
-Si el registro existe, recupera el estado actual de la entrega, verifica si dicho estado corresponde a delivered y construye una respuesta que incluye el identificador de la entrega, el número de seguimiento, el estado actual y la fecha de entrega registrada.
+When the delivery does not exist in DynamoDB, the function returns an HTTP 404 code indicating the requested resource was not found.
 
-Cuando la entrega no existe en DynamoDB, la función devuelve un código HTTP 404 indicando que el recurso solicitado no fue encontrado.
+If any exception occurs during the query, the function catches the error and returns an HTTP 500 code along with the corresponding message.
 
-En caso de producirse cualquier excepción durante la consulta, la función captura el error y devuelve un código HTTP 500 junto con el mensaje correspondiente.
+This process lets the mobile app query the up-to-date status of any delivery in real time without accessing the main database directly.
 
-Este proceso permite que la aplicación móvil consulte en tiempo real el estado actualizado de cualquier entrega sin necesidad de acceder directamente a la base de datos principal.
+**Lambda function: Calculate ETA**
 
-#### Función Lambda: Calcular ETA
+The `lambda_calcular_eta()` function calculates a vehicle's estimated time of arrival (ETA) using its current location, its destination and its reported speed.
 
-La función lambda_calcular_eta() calcula el tiempo estimado de llegada (ETA) de un vehículo utilizando la ubicación actual, el destino y la velocidad reportada.
+It receives as parameters the vehicle identifier, the current GPS location, the destination coordinates and the average speed.
 
-Para ello recibe como parámetros el identificador del vehículo, la ubicación GPS actual, las coordenadas del destino y la velocidad promedio.
+The remaining distance is calculated using a simplified approximation based on geographic coordinates. The remaining time is then estimated from the vehicle's speed.
 
-La distancia restante se calcula mediante una aproximación simplificada basada en coordenadas geográficas. Posteriormente se estima el tiempo restante utilizando la velocidad del vehículo.
+Finally, the calculated information is stored in the `vehicle_tracking` table, allowing mobile apps and dashboards to constantly check each vehicle's progress.
 
-Finalmente, la información calculada se almacena en la tabla vehicle_tracking, permitiendo que aplicaciones móviles y dashboards consulten permanentemente el progreso de cada vehículo.
+**Lambda function: Deviation Alert**
 
-#### Función Lambda: Alerta de Desvío
+The `lambda_alerta_desvio()` function continuously monitors the GPS location of vehicles.
 
-La función lambda_alerta_desvio() supervisa continuamente la ubicación GPS de los vehículos.
+Each time it receives a new position, it queries DynamoDB for the waypoints of the assigned route. It then calculates the minimum distance between the vehicle's current position and the planned route.
 
-Cada vez que recibe una nueva posición consulta en DynamoDB los waypoints correspondientes a la ruta asignada.
+When that distance exceeds the established threshold of five kilometers, the system considers that a route deviation exists. At that point a message with the incident information is generated and sent through Amazon SNS to notify the operations team.
 
-Posteriormente calcula la distancia mínima entre la posición actual del vehículo y la ruta planificada.
+In addition, the alert is recorded in the `alerts_history` table, keeping a complete history of all detected events.
 
-Cuando dicha distancia supera el umbral establecido de cinco kilómetros, el sistema considera que existe un desvío de ruta.
+### 4.5 Explanation of the `migrar_datos_postgresql()` Function
 
-En ese momento se genera un mensaje con la información del incidente, el cual es enviado mediante Amazon SNS para notificar al equipo de operaciones.
+The `migrar_datos_postgresql()` function does not perform the database migration directly. Its purpose is to automatically generate a Bash script named `migrate_to_rds.sh`, which contains all the instructions needed to copy the information from local PostgreSQL to Amazon RDS.
 
-Adicionalmente la alerta queda registrada en la tabla alerts_history, permitiendo conservar un historial completo de todos los eventos detectados.
+The process starts by making a full copy of the local database using the `pg_dump` command, generating a SQL file that contains both the structure and the data of all tables.
 
-### 4.5 Explicación de la función migrar_datos_postgresql()
+A connection is then established to the PostgreSQL instance hosted on Amazon RDS and the target database is created.
 
-La función migrar_datos_postgresql() no realiza directamente la migración de la base de datos. Su propósito consiste en generar automáticamente un script Bash denominado migrate_to_rds.sh, el cual contiene todas las instrucciones necesarias para copiar la información desde PostgreSQL local hacia Amazon RDS.
+Finally, the file generated by `pg_dump` is restored using `psql`, recreating the original structure and importing all the information into the AWS-managed instance.
 
-El proceso comienza realizando una copia completa de la base de datos local mediante el comando pg_dump, generando un archivo SQL que contiene tanto la estructura como los datos de todas las tablas.
-
-Posteriormente se establece conexión con la instancia PostgreSQL alojada en Amazon RDS y se crea la base de datos destino.
-
-Finalmente, el archivo generado por pg_dump es restaurado utilizando psql, recreando la estructura original e importando toda la información dentro de la instancia administrada por AWS.
-
-Este procedimiento permite migrar completamente la base de datos operacional hacia la nube sin modificar la estructura existente, facilitando la continuidad de los procesos ETL y del entorno analítico implementado en FleetLogix.
+This procedure allows the operational database to be fully migrated to the cloud without changing the existing structure, supporting continuity of the ETL processes and the analytics environment implemented in FleetLogix.
 
 ---
 
-## 5. Construcción del Data Warehouse y proceso ETL
+## 5. Data Warehouse Construction and ETL Process
 
-Con el fin de soportar procesos analíticos y facilitar la toma de decisiones basada en datos, se diseñó e implementó un proceso ETL (Extract, Transform, Load) que permite integrar la información operacional almacenada en PostgreSQL dentro de un Data Warehouse implementado en Snowflake.
+To support analytical processes and enable data-driven decision making, an ETL (Extract, Transform, Load) process was designed and implemented to integrate the operational information stored in PostgreSQL into a Data Warehouse built on Snowflake.
 
-El proceso automatiza la extracción de los datos, aplica reglas de transformación y calidad, y carga la información utilizando un modelo dimensional optimizado para consultas analíticas.
+The process automates data extraction, applies transformation and quality rules, and loads the information using a dimensional model optimized for analytical queries.
 
-Como punto de partida, se proporcionó un código base para la implementación del Data Warehouse en Snowflake que presentaba funcionalidades incompletas y diversos errores que afectaban la carga, transformación y organización de los datos. Por esta razón, fue necesario realizar un proceso de análisis, depuración y desarrollo para completar las secciones faltantes, corregir las inconsistencias detectadas y garantizar que la información fuera cargada correctamente, preservando la integridad de los datos y el funcionamiento adecuado del modelo analítico.
+As a starting point, a base code for the Snowflake Data Warehouse implementation was provided. It had incomplete functionality and several errors affecting data loading, transformation and organization. For this reason, a process of analysis, debugging and development was needed to complete the missing sections, fix the inconsistencies found, and ensure the information was loaded correctly, preserving data integrity and the proper functioning of the analytical model.
 
-### 5.1 Arquitectura del proceso ETL
+### 5.1 ETL Process Architecture
 
-El flujo implementado consta de tres etapas principales:
+The implemented flow has three main stages.
 
-#### Extracción (Extract)
+**Extract**
 
-Se obtiene la información desde la base de datos PostgreSQL a partir de las tablas operacionales:
+Information is obtained from the PostgreSQL database from the operational tables:
 
 - Vehicles
 - Drivers
@@ -559,89 +483,83 @@ Se obtiene la información desde la base de datos PostgreSQL a partir de las tab
 - Deliveries
 - Maintenance
 
-#### Transformación (Transform)
+**Transform**
 
-Durante esta etapa se realizaron procesos de limpieza, validación y enriquecimiento de los datos.
+During this stage, data cleaning, validation and enrichment processes were carried out. The implemented transformations include:
 
-Entre las transformaciones implementadas se encuentran:
+- calculation of actual delivery time;
+- duration of each trip;
+- fuel efficiency;
+- punctuality indicators;
+- cost per delivery;
+- generation of date and time dimensions;
+- validation of weights and times;
+- removal of inconsistent records.
 
-- cálculo del tiempo real de entrega;
-- duración de cada viaje;
-- eficiencia de combustible;
-- indicadores de puntualidad;
-- costos por entrega;
-- generación de dimensiones de fecha y hora;
-- validación de pesos y tiempos;
-- eliminación de registros inconsistentes.
+These rules ensure that only valid information is loaded into the Data Warehouse.
 
-Estas reglas permiten garantizar que únicamente información válida sea cargada al Data Warehouse.
+**Load**
 
-#### Carga (Load)
+Finally, the information is loaded into Snowflake through automatic processes using staging tables and `MERGE` operations to keep the dimensions and the fact table up to date.
 
-Finalmente, la información es cargada en Snowflake mediante procesos automáticos utilizando tablas de staging y operaciones MERGE para mantener actualizadas las dimensiones y la tabla de hechos.
+### 5.2 Dimensional Model
 
-### 5.2 Modelo dimensional
+A star schema was designed, made up of one fact table and multiple dimensions.
 
-Se diseñó un esquema estrella (Star Schema) compuesto por una tabla de hechos y múltiples dimensiones.
+**Fact table**
 
-#### Tabla de hechos
+`FACT_DELIVERIES` contains the main business metrics, including:
 
-- FACT_DELIVERIES
+- delivery times;
+- transported weight;
+- fuel consumption;
+- costs;
+- compliance indicators.
 
-Contiene las principales métricas del negocio, incluyendo:
+**Dimension tables**
 
-- tiempos de entrega;
-- peso transportado;
-- consumo de combustible;
-- costos;
-- indicadores de cumplimiento.
+- `DIM_CUSTOMERS`
+- `DIM_VEHICLES`
+- `DIM_DRIVERS`
+- `DIM_ROUTES`
+- `DIM_DATE`
+- `DIM_TIME`
 
-#### Tablas de dimensiones
+Each dimension uses surrogate keys to support historical analysis and improve query performance.
 
-- DIM_CUSTOMERS
-- DIM_VEHICLES
-- DIM_DRIVERS
-- DIM_ROUTES
-- DIM_DATE
-- DIM_TIME
+### 5.3 Data Quality During the ETL
 
-Cada dimensión utiliza claves sustitutas (Surrogate Keys) para facilitar el análisis histórico y mejorar el rendimiento de las consultas.
+Before loading into the Data Warehouse, multiple validations were applied, including:
 
-### 5.3 Calidad de datos durante el ETL
+- removal of negative times;
+- validation of package weights;
+- date consistency;
+- normalization of data types;
+- null value control;
+- validation of business rules.
 
-Antes de realizar la carga al Data Warehouse se aplicaron múltiples validaciones, entre ellas:
+This process guaranteed the consistency of the analytical information.
 
-- eliminación de tiempos negativos;
-- validación de pesos de paquetes;
-- consistencia de fechas;
-- normalización de tipos de datos;
-- control de valores nulos;
-- validación de reglas de negocio.
+### 5.4 Process Automation
 
-Este proceso permitió garantizar la consistencia de la información analítica.
+The ETL process was developed entirely in Python and can run automatically. On each run, the following are recorded:
 
-### 5.4 Automatización del proceso
+- number of records extracted;
+- number of records transformed;
+- number of records loaded;
+- total execution time;
+- errors found during the process.
 
-El proceso ETL fue desarrollado completamente en Python y puede ejecutarse de forma automática.
+This facilitates monitoring and traceability of the data load.
 
-Durante cada ejecución se registran:
+### 5.5 Data Warehouse Validation
 
-- cantidad de registros extraídos;
-- cantidad de registros transformados;
-- cantidad de registros cargados;
-- tiempo total de ejecución;
-- errores encontrados durante el proceso.
+Once loading finished, the following were verified:
 
-Esto facilita el monitoreo y la trazabilidad de la carga de datos.
+- consistency of surrogate keys;
+- correspondence between dimensions and the fact table;
+- integrity of relationships;
+- consistency of calculated metrics;
+- correct operation of the load process.
 
-### 5.5 Validación del Data Warehouse
-
-Una vez finalizada la carga se verificó:
-
-- consistencia de claves sustitutas;
-- correspondencia entre dimensiones y tabla de hechos;
-- integridad de las relaciones;
-- consistencia de métricas calculadas;
-- correcto funcionamiento del proceso de carga.
-
-Las pruebas confirmaron que la información almacenada en el Data Warehouse es consistente con los datos operacionales del sistema.
+The tests confirmed that the information stored in the Data Warehouse is consistent with the system's operational data.
